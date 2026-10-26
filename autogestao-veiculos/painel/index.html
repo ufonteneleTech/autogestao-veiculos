@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Painel do vendedor · AutoGestão Veículos</title>
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/catalogo.css">
+  <link rel="stylesheet" href="../assets/css/painel.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">AG</span>
+        <div>
+          <h1 class="brand-name">AutoGestão Veículos</h1>
+          <p class="brand-tag">Painel do vendedor</p>
+        </div>
+      </div>
+      <nav class="nav" id="nav" aria-label="Menu" hidden></nav>
+    </div>
+  </header>
+
+  <div class="container">
+    <div id="messages" class="messages" role="status" aria-live="polite"></div>
+  </div>
+
+  <!-- PAINEL: login -->
+  <main class="container screen" id="screen-login" hidden>
+    <form class="login-card" id="login-form" novalidate>
+      <h2 id="login-title">Painel do vendedor</h2>
+      <p class="sub" id="login-sub">Informe o e-mail e a senha de acesso para continuar.</p>
+      <div id="login-error" class="alert alert-error" hidden></div>
+      <div class="field">
+        <label for="l-email">E-mail</label>
+        <input id="l-email" type="email" autocomplete="username" required>
+      </div>
+      <div class="field">
+        <label for="l-pass">Senha</label>
+        <input id="l-pass" type="password" autocomplete="current-password" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Entrar</button>
+      <button type="button" class="btn btn-ghost" id="login-back">Voltar</button>
+    </form>
+  </main>
+
+  <!-- PAINEL: lista de veículos -->
+  <main class="container screen" id="screen-list" hidden>
+    <h2 class="page-title">Veículos cadastrados</h2>
+    <section class="stats" aria-label="Resumo do estoque">
+      <div class="stat"><span class="stat-label">Total de veículos</span><strong class="stat-value" id="stat-total">0</strong></div>
+      <div class="stat"><span class="stat-label">Carros</span><strong class="stat-value" id="stat-cars">0</strong></div>
+      <div class="stat"><span class="stat-label">Motos</span><strong class="stat-value" id="stat-bikes">0</strong></div>
+      <div class="stat"><span class="stat-label">Outros</span><strong class="stat-value" id="stat-others">0</strong></div>
+      <div class="stat stat-wide"><span class="stat-label">Soma dos preços anunciados</span><strong class="stat-value" id="stat-sum">R$ 0,00</strong></div>
+    </section>
+    <p class="notice">O <strong>preço anunciado</strong> é definido por você e pode ser alterado a qualquer momento. O <strong>valor de mercado</strong> é apenas uma estimativa de referência, não uma cotação oficial garantida.</p>
+    <section class="toolbar" aria-label="Pesquisa e filtros">
+      <div class="search-box">
+        <label for="search" class="sr-only">Pesquisar por nome, marca ou modelo</label>
+        <input type="search" id="search" placeholder="Pesquisar por nome, marca ou modelo..." autocomplete="off">
+      </div>
+      <div class="filters" role="group" aria-label="Filtrar por tipo">
+        <button type="button" class="chip is-active" data-filter="all">Todos</button>
+        <button type="button" class="chip" data-filter="carro">Carros</button>
+        <button type="button" class="chip" data-filter="moto">Motos</button>
+        <button type="button" class="chip" data-filter="outro">Outros</button>
+      </div>
+      <button type="button" class="btn btn-primary" id="btn-new">+ Cadastrar veículo</button>
+      <button type="button" class="btn btn-ghost btn-small" id="btn-restore" title="Recadastra os exemplos que foram excluídos">Restaurar exemplos</button>
+      <button type="button" class="btn btn-whatsapp btn-small" id="btn-export" title="Gera o arquivo dados-veiculos.js com veículos e fotos">⬇ Baixar dados da vitrine</button>
+    </section>
+    <p class="notice"><strong>Importante:</strong> os veículos e fotos ficam salvos só neste navegador. Depois de cadastrar ou alterar, clique em <strong>“Baixar dados da vitrine”</strong>, coloque o arquivo <code>dados-veiculos.js</code> na pasta <code>dados/</code> do projeto (substituindo o anterior) e envie a alteração ao GitHub. Sem isso, quem abrir a vitrine em outro lugar não verá as mudanças.</p>
+    <section id="vehicle-list" class="grid" aria-label="Lista de veículos"></section>
+    <div id="empty-state" class="empty" hidden>
+      <p class="empty-title">Nenhum veículo cadastrado.</p>
+      <p class="empty-text" id="empty-text">Clique em “Cadastrar veículo” para adicionar o primeiro.</p>
+    </div>
+  </main>
+
+  <!-- PAINEL: cadastro / edição -->
+  <main class="container screen" id="screen-form" hidden>
+    <h2 class="page-title" id="form-title">Cadastrar veículo</h2>
+    <section class="form-card">
+      <form id="vehicle-form" novalidate>
+        <div id="form-error" class="alert alert-error" hidden></div>
+        <div class="form-grid">
+          <div class="field"><label for="f-type">Tipo *</label>
+            <select id="f-type" name="type"><option value="carro">Carro</option><option value="moto">Moto</option><option value="outro">Outros</option></select></div>
+          <div class="field"><label for="f-name">Nome do veículo / anúncio</label>
+            <input id="f-name" name="name" type="text" maxlength="100" placeholder="Se vazio, usa marca + modelo"></div>
+          <div class="field"><label for="f-brand">Marca *</label><input id="f-brand" name="brand" type="text" maxlength="60"></div>
+          <div class="field"><label for="f-model">Modelo *</label><input id="f-model" name="model" type="text" maxlength="100"></div>
+          <div class="field"><label for="f-year">Ano de fabricação/modelo *</label><input id="f-year" name="year" type="number" inputmode="numeric" min="1900" step="1"></div>
+          <div class="field"><label for="f-color">Cor</label><input id="f-color" name="color" type="text" maxlength="40" placeholder="Deixe vazio se não souber"></div>
+          <div class="field"><label for="f-km">Quilometragem (km)</label><input id="f-km" name="km" type="number" inputmode="numeric" min="0" step="1" placeholder="Deixe vazio se não souber"></div>
+          <div class="field"><label for="f-price">Preço de venda anunciado (R$) *</label><input id="f-price" name="price" type="number" inputmode="decimal" min="0" step="0.01"></div>
+          <div class="field"><label for="f-market">Valor aproximado de mercado (R$)</label><input id="f-market" name="market" type="number" inputmode="decimal" min="0" step="0.01" placeholder="Estimativa de referência"></div>
+          <div class="field field-full"><label for="f-refnote">Origem do valor de mercado</label><input id="f-refnote" name="refNote" type="text" maxlength="200" placeholder="Ex.: Tabela FIPE, mês/ano, ou “estimativa própria”"></div>
+          <div class="field field-full"><label for="f-refurl">Link da fonte do valor de mercado</label><input id="f-refurl" name="refUrl" type="url" placeholder="https://..."></div>
+          <div class="field field-full"><label for="f-contact">WhatsApp deste anúncio (com DDD)</label>
+            <input id="f-contact" name="contact" type="tel" inputmode="tel" maxlength="20" placeholder="Ex.: (86) 98152-7255. Se vazio, usa o número da descrição ou o padrão">
+          </div>
+          <div class="field field-full"><label for="f-photos">Fotos do veículo (até 5, enviadas do seu dispositivo)</label>
+            <input id="f-photos" name="photos" type="file" accept="image/*" multiple>
+            <div id="image-previews" class="previews" aria-live="polite"></div></div>
+          <div class="field field-full"><label for="f-image">Ou adicionar uma foto por link</label><input id="f-image" name="image" type="url" placeholder="https://... (opcional)"></div>
+          <div class="field field-full"><label for="f-desc">Descrição do veículo</label><textarea id="f-desc" name="description" rows="4" maxlength="1000"></textarea></div>
+        </div>
+        <p class="hint">Campos marcados com * são obrigatórios. Dados não preenchidos aparecerão como “Não informado”.</p>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-ghost" id="btn-cancel">Cancelar</button>
+          <button type="button" class="btn btn-primary" id="btn-save">Salvar veículo</button>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <!-- PAINEL: prévia da vitrine -->
+  <main class="container screen" id="screen-showcase" hidden>
+    <h2 class="page-title">Prévia da vitrine</h2>
+    <div class="contact-bar" data-contato="barra" data-botoes="curto" data-texto="Ficou com dúvida ou quer comprar? Ligue ou chame no WhatsApp:"></div>
+    <section class="toolbar" style="margin-top:18px" aria-label="Pesquisa e filtros">
+      <div class="search-box">
+        <label for="vsearch" class="sr-only">Pesquisar por nome, marca ou modelo</label>
+        <input type="search" id="vsearch" placeholder="Pesquisar por nome, marca ou modelo..." autocomplete="off">
+      </div>
+      <div class="filters" role="group" aria-label="Filtrar por tipo">
+        <button type="button" class="chip is-active" data-vfilter="all">Todos</button>
+        <button type="button" class="chip" data-vfilter="carro">Carros</button>
+        <button type="button" class="chip" data-vfilter="moto">Motos</button>
+        <button type="button" class="chip" data-vfilter="outro">Outros</button>
+      </div>
+    </section>
+    <section id="showcase-list" class="grid" aria-label="Vitrine"></section>
+    <div id="showcase-empty" class="empty" hidden>
+      <p class="empty-title" id="showcase-empty-title">Nenhum veículo disponível no momento.</p>
+      <p class="empty-text" id="showcase-empty-text"></p>
+    </div>
+  </main>
+
+  <!-- Anúncio completo -->
+  <main class="container screen" id="screen-detail" hidden>
+    <div id="detail-body"></div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p data-contato="rodape"></p>
+    </div>
+  </footer>
+
+  <!-- Dados publicados (gerados pelo painel) -->
+  <script src="../dados/dados-veiculos.js"></script>
+  <!-- Acesso local (NÃO vai para o GitHub). Se não existir, o login avisa que não está configurado. -->
+  <script src="acesso.local.js"></script>
+  <!-- Compartilhado -->
+  <script src="../assets/js/compartilhado/config.js"></script>
+  <script src="../assets/js/compartilhado/utilitarios.js"></script>
+  <script src="../assets/js/compartilhado/armazenamento.js"></script>
+  <script src="../assets/js/compartilhado/detalhe.js"></script>
+  <script src="../assets/js/compartilhado/contato.js"></script>
+  <!-- Vitrine (usada na prévia) -->
+  <script src="../assets/js/vitrine/vitrine.js"></script>
+  <!-- Painel -->
+  <script src="../assets/js/painel/exemplos.js"></script>
+  <script src="../assets/js/painel/nucleo.js"></script>
+  <script src="../assets/js/painel/acesso.js"></script>
+  <script src="../assets/js/painel/lista.js"></script>
+  <script src="../assets/js/painel/formulario.js"></script>
+  <script src="../assets/js/painel/dados.js"></script>
+  <script src="../assets/js/painel/previa.js"></script>
+  <script src="../assets/js/painel/iniciar.js"></script>
+</body>
+</html>

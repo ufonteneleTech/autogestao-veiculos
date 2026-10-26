@@ -1,0 +1,8 @@
+# Login do painel (nunca publicar)
+painel/acesso.local.js
+
+# Arquivos do sistema / editores
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

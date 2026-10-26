@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vitrine · AutoGestão Veículos</title>
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/catalogo.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">AG</span>
+        <div>
+          <h1 class="brand-name">AutoGestão Veículos</h1>
+          <p class="brand-tag">Carros, motos e outros para venda</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- VITRINE: lista de veículos -->
+  <main class="container screen" id="screen-showcase">
+    <h2 class="page-title">Veículos disponíveis</h2>
+    <div class="contact-bar" data-contato="barra" data-botoes="curto" data-texto="Ficou com dúvida ou quer comprar? Ligue ou chame no WhatsApp:"></div>
+    <section class="toolbar" style="margin-top:18px" aria-label="Pesquisa e filtros">
+      <div class="search-box">
+        <label for="vsearch" class="sr-only">Pesquisar por nome, marca ou modelo</label>
+        <input type="search" id="vsearch" placeholder="Pesquisar por nome, marca ou modelo..." autocomplete="off">
+      </div>
+      <div class="filters" role="group" aria-label="Filtrar por tipo">
+        <button type="button" class="chip is-active" data-vfilter="all">Todos</button>
+        <button type="button" class="chip" data-vfilter="carro">Carros</button>
+        <button type="button" class="chip" data-vfilter="moto">Motos</button>
+        <button type="button" class="chip" data-vfilter="outro">Outros</button>
+      </div>
+    </section>
+    <section id="showcase-list" class="grid" aria-label="Vitrine"></section>
+    <div id="showcase-empty" class="empty" hidden>
+      <p class="empty-title" id="showcase-empty-title">Nenhum veículo disponível no momento.</p>
+      <p class="empty-text" id="showcase-empty-text"></p>
+    </div>
+  </main>
+
+  <!-- Anúncio completo -->
+  <main class="container screen" id="screen-detail" hidden>
+    <div id="detail-body"></div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p data-contato="rodape"></p>
+    </div>
+  </footer>
+
+  <!-- Dados publicados (gerados pelo painel) -->
+  <script src="../dados/dados-veiculos.js"></script>
+  <!-- Compartilhado -->
+  <script src="../assets/js/compartilhado/config.js"></script>
+  <script src="../assets/js/compartilhado/utilitarios.js"></script>
+  <script src="../assets/js/compartilhado/armazenamento.js"></script>
+  <script src="../assets/js/compartilhado/detalhe.js"></script>
+  <script src="../assets/js/compartilhado/contato.js"></script>
+  <!-- Vitrine -->
+  <script src="../assets/js/vitrine/vitrine.js"></script>
+  <script src="../assets/js/vitrine/iniciar.js"></script>
+</body>
+</html>
